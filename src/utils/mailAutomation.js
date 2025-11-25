@@ -1,12 +1,12 @@
 /**
  * Mail Automation Utility
  * Simulates a cron job that checks for pending tasks
- * and sends mock email notifications every 20 minutes
+ * and sends mock email notifications every 2 minutes
  */
 
 /**
  * Check for pending tasks and send mock email notifications
- * This function is called every 20 minutes by the App component
+ * This function is called every 2 minutes by the App component
  */
 export function checkMailNotifications() {
   const tasks = JSON.parse(sessionStorage.getItem('tasks') || '[]');

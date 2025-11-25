@@ -16,10 +16,10 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      // Set up mail automation - check every 20 minutes (1200000 ms)
+      // Set up mail automation - check every 2 minutes (120000 ms)
       const mailInterval = setInterval(() => {
         checkMailNotifications();
-      }, 1200000); // 20 minutes
+      }, 120000); // 2 minutes
 
       // Also run once immediately after login
       checkMailNotifications();
