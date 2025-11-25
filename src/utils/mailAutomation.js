@@ -13,23 +13,25 @@
 async function sendEmail(toEmail, subject, message) {
   try {
     // Using EmailJS - Free email service for frontend applications
-    // You need to set up an account at https://www.emailjs.com/
     
     const serviceID = 'service_mw24vcu'; // Your EmailJS service ID
     const templateID = 'template_xpql7jg'; // Your EmailJS template ID
     const publicKey = 'pDG7bErcgY15ZBqKy'; // Your EmailJS public key
     
-    const emailData = {
+    // EmailJS template parameters
+    const templateParams = {
+      to_name: toEmail.split('@')[0], // Get name from email
       to_email: toEmail,
+      from_name: 'Task Manager',
       subject: subject,
       message: message,
-      from_name: 'Task Manager App'
+      reply_to: toEmail
     };
 
     // If EmailJS is configured, send the email
     if (serviceID !== 'YOUR_SERVICE_ID' && typeof window.emailjs !== 'undefined') {
-      const response = await window.emailjs.send(serviceID, templateID, emailData, publicKey);
-      console.log('✅ Email sent successfully!', response);
+      const response = await window.emailjs.send(serviceID, templateID, templateParams, publicKey);
+      console.log('✅ Email sent successfully to', toEmail);
       return { success: true, response };
     } else {
       // Fallback: Log to console if EmailJS is not configured

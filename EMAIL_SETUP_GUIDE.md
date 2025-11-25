@@ -23,19 +23,29 @@ This guide will help you configure real email sending functionality for the Task
 
 **Template Name:** Task Notification
 
+**To Email:** {{to_email}}
+
 **Subject:** {{subject}}
 
 **Content:**
 ```
-Hi there,
+Hello {{to_name}},
 
 {{message}}
 
 Best regards,
-Task Manager App
+{{from_name}}
 ```
 
-4. Save and copy the **Template ID** (e.g., `template_xyz789`)
+**IMPORTANT Template Variables:**
+- `{{to_email}}` - Recipient's email address
+- `{{to_name}}` - Recipient's name
+- `{{subject}}` - Email subject line
+- `{{message}}` - Email body content
+- `{{from_name}}` - Sender name (Task Manager)
+
+4. Make sure to set the **To Email** field to `{{to_email}}` in the template settings
+5. Save and copy the **Template ID** (e.g., `template_xyz789`)
 
 ### Step 4: Get Public Key
 1. Go to **Account** → **General**
