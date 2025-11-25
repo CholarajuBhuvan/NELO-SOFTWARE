@@ -15,9 +15,9 @@ async function sendEmail(toEmail, subject, message) {
     // Using EmailJS - Free email service for frontend applications
     // You need to set up an account at https://www.emailjs.com/
     
-    const serviceID = 'YOUR_SERVICE_ID'; // Replace with your EmailJS service ID
-    const templateID = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS template ID
-    const publicKey = 'YOUR_PUBLIC_KEY'; // Replace with your EmailJS public key
+    const serviceID = 'service_mw24vcu'; // Your EmailJS service ID
+    const templateID = 'template_xpql7jg'; // Your EmailJS template ID
+    const publicKey = 'pDG7bErcgY15ZBqKy'; // Your EmailJS public key
     
     const emailData = {
       to_email: toEmail,
