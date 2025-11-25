@@ -1,14 +1,54 @@
 /**
  * Mail Automation Utility
- * Simulates a cron job that checks for pending tasks
- * and sends mock email notifications every 2 minutes
+ * Checks for pending tasks and sends email notifications every 2 minutes
+ * Uses EmailJS for sending emails to official Gmail
  */
 
 /**
- * Check for pending tasks and send mock email notifications
+ * Send email using EmailJS service
+ * @param {string} toEmail - Recipient email address
+ * @param {string} subject - Email subject
+ * @param {string} message - Email message body
+ */
+async function sendEmail(toEmail, subject, message) {
+  try {
+    // Using EmailJS - Free email service for frontend applications
+    // You need to set up an account at https://www.emailjs.com/
+    
+    const serviceID = 'YOUR_SERVICE_ID'; // Replace with your EmailJS service ID
+    const templateID = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS template ID
+    const publicKey = 'YOUR_PUBLIC_KEY'; // Replace with your EmailJS public key
+    
+    const emailData = {
+      to_email: toEmail,
+      subject: subject,
+      message: message,
+      from_name: 'Task Manager App'
+    };
+
+    // If EmailJS is configured, send the email
+    if (serviceID !== 'YOUR_SERVICE_ID' && typeof window.emailjs !== 'undefined') {
+      const response = await window.emailjs.send(serviceID, templateID, emailData, publicKey);
+      console.log('✅ Email sent successfully!', response);
+      return { success: true, response };
+    } else {
+      // Fallback: Log to console if EmailJS is not configured
+      console.log('⚠️ EmailJS not configured. Email would be sent to:', toEmail);
+      console.log('📧 Subject:', subject);
+      console.log('📄 Message:', message);
+      return { success: false, message: 'EmailJS not configured' };
+    }
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Check for pending tasks and send email notifications
  * This function is called every 2 minutes by the App component
  */
-export function checkMailNotifications() {
+export async function checkMailNotifications() {
   const tasks = JSON.parse(sessionStorage.getItem('tasks') || '[]');
   const userSession = JSON.parse(sessionStorage.getItem('userSession') || '{}');
   
@@ -88,6 +128,53 @@ export function checkMailNotifications() {
     console.log(`   🔴 High: ${highPriority}`);
     console.log(`   🟡 Medium: ${mediumPriority}`);
     console.log(`   🟢 Low: ${lowPriority}`);
+    
+    // Build email message
+    let emailMessage = `Task Reminder\n\n`;
+    emailMessage += `📊 TASK SUMMARY:\n`;
+    emailMessage += `Total Pending: ${pendingTasks.length}\n`;
+    emailMessage += `⚠️ Overdue: ${overdueTasks.length}\n`;
+    emailMessage += `📅 Due Today: ${todayTasks.length}\n`;
+    emailMessage += `🔔 Upcoming (3 days): ${upcomingTasks.length}\n\n`;
+    
+    if (overdueTasks.length > 0) {
+      emailMessage += `⚠️ OVERDUE TASKS:\n`;
+      overdueTasks.forEach((task, index) => {
+        emailMessage += `${index + 1}. [${task.priority.toUpperCase()}] ${task.title}\n`;
+        emailMessage += `   Due: ${new Date(task.dueDate).toLocaleDateString()}\n`;
+      });
+      emailMessage += `\n`;
+    }
+    
+    if (todayTasks.length > 0) {
+      emailMessage += `📅 DUE TODAY:\n`;
+      todayTasks.forEach((task, index) => {
+        emailMessage += `${index + 1}. [${task.priority.toUpperCase()}] ${task.title}\n`;
+      });
+      emailMessage += `\n`;
+    }
+    
+    if (upcomingTasks.length > 0) {
+      emailMessage += `🔔 UPCOMING (Next 3 Days):\n`;
+      upcomingTasks.forEach((task, index) => {
+        emailMessage += `${index + 1}. [${task.priority.toUpperCase()}] ${task.title}\n`;
+        emailMessage += `   Due: ${new Date(task.dueDate).toLocaleDateString()}\n`;
+      });
+      emailMessage += `\n`;
+    }
+    
+    emailMessage += `🎯 PRIORITY BREAKDOWN:\n`;
+    emailMessage += `🔴 High: ${highPriority}\n`;
+    emailMessage += `🟡 Medium: ${mediumPriority}\n`;
+    emailMessage += `🟢 Low: ${lowPriority}\n\n`;
+    emailMessage += `Stay organized and complete your tasks on time!`;
+    
+    // Send actual email
+    await sendEmail(
+      userSession.email || 'user@example.com',
+      `Task Reminder - You have ${pendingTasks.length} pending task(s)`,
+      emailMessage
+    );
   }
 
   console.log('\n' + '-'.repeat(60));
