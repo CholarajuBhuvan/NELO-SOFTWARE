@@ -1,6 +1,6 @@
 /**
  * Mail Automation Utility
- * Checks for pending tasks and sends email notifications every 2 minutes
+ * Checks for pending tasks and sends email notifications every 20 minutes
  * Uses EmailJS for sending emails to official Gmail
  */
 
@@ -18,14 +18,12 @@ async function sendEmail(toEmail, subject, message) {
     const templateID = 'template_xpql7jg'; // Your EmailJS template ID
     const publicKey = 'pDG7bErcgY15ZBqKy'; // Your EmailJS public key
     
-    // EmailJS template parameters
+    // EmailJS template parameters - simplified format
     const templateParams = {
-      to_name: toEmail.split('@')[0], // Get name from email
-      to_email: toEmail,
-      from_name: 'Task Manager',
-      subject: subject,
-      message: message,
-      reply_to: toEmail
+      user_email: toEmail,  // Changed from to_email
+      user_subject: subject, // Changed from subject
+      user_message: message, // Changed from message
+      from_name: 'Task Manager'
     };
 
     // If EmailJS is configured, send the email
@@ -48,7 +46,7 @@ async function sendEmail(toEmail, subject, message) {
 
 /**
  * Check for pending tasks and send email notifications
- * This function is called every 2 minutes by the App component
+ * This function is called every 20 minutes by the App component
  */
 export async function checkMailNotifications() {
   const tasks = JSON.parse(sessionStorage.getItem('tasks') || '[]');
